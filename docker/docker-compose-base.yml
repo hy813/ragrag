@@ -48,7 +48,7 @@ services:
   #    - ragflow
 
   mysql:
-    image: mysql:5.7.18
+    image: mysql:8.0.31   # mysql:5.7.18
     container_name: ragflow-mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}

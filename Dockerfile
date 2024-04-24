@@ -1,4 +1,5 @@
-FROM swr.cn-north-4.myhuaweicloud.com/infiniflow/ragflow-base:v1.0
+# FROM swr.cn-north-4.myhuaweicloud.com/infiniflow/ragflow-base:v1.0
+FROM --platform=arm64 registry.cn-shenzhen.aliyuncs.com/easyai/ragrag-base:v1.1
 USER  root
 
 WORKDIR /ragflow

@@ -18,14 +18,14 @@ from io import BytesIO
 from rag.nlp import bullets_category, is_english, tokenize, remove_contents_table, \
     hierarchical_merge, make_colon_as_title, naive_merge, random_choices, tokenize_table, add_positions, \
     tokenize_chunks, find_codec
-from rag.nlp import huqie
+from rag.nlp import rag_tokenizer
 from deepdoc.parser import PdfParser, DocxParser, PlainParser
 
 
 class Pdf(PdfParser):
     def __call__(self, filename, binary=None, from_page=0,
                  to_page=100000, zoomin=3, callback=None):
-        callback(msg="OCR is  running...")
+        callback(msg="OCR is running...")
         self.__images__(
             filename if not binary else binary,
             zoomin,
@@ -63,9 +63,9 @@ def chunk(filename, binary=None, from_page=0, to_page=100000,
     """
     doc = {
         "docnm_kwd": filename,
-        "title_tks": huqie.qie(re.sub(r"\.[a-zA-Z]+$", "", filename))
+        "title_tks": rag_tokenizer.tokenize(re.sub(r"\.[a-zA-Z]+$", "", filename))
     }
-    doc["title_sm_tks"] = huqie.qieqie(doc["title_tks"])
+    doc["title_sm_tks"] = rag_tokenizer.fine_grained_tokenize(doc["title_tks"])
     pdf_parser = None
     sections, tbls = [], []
     if re.search(r"\.docx$", filename, re.IGNORECASE):
@@ -76,6 +76,7 @@ def chunk(filename, binary=None, from_page=0, to_page=100000,
             binary if binary else filename, from_page=from_page, to_page=to_page)
         remove_contents_table(sections, eng=is_english(
             random_choices([t for t, _ in sections], k=200)))
+        tbls = [((None, lns), None) for lns in tbls]
         callback(0.8, "Finish parsing.")
 
     elif re.search(r"\.pdf$", filename, re.IGNORECASE):

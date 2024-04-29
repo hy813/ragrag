@@ -8,7 +8,7 @@ from rag.utils import singleton
 
 
 @singleton
-class HuMinio(object):
+class RAGFlowMinio(object):
     def __init__(self):
         self.conn = None
         self.__open__()
@@ -56,7 +56,6 @@ class HuMinio(object):
         except Exception as e:
             minio_logger.error(f"Fail rm {bucket}/{fnm}: " + str(e))
 
-
     def get(self, bucket, fnm):
         for _ in range(1):
             try:
@@ -87,10 +86,12 @@ class HuMinio(object):
                 time.sleep(1)
         return
 
-MINIO = HuMinio()
+
+MINIO = RAGFlowMinio()
+
 
 if __name__ == "__main__":
-    conn = HuMinio()
+    conn = RAGFlowMinio()
     fnm = "/opt/home/kevinhu/docgpt/upload/13/11-408.jpg"
     from PIL import Image
     img = Image.open(fnm)
